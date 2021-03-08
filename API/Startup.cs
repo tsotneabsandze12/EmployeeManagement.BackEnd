@@ -7,7 +7,7 @@ using API.Helpers;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Identity;
-//using Infrastructure.Identity;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -39,18 +39,20 @@ namespace API
             services.AddControllers();
             
             services.AddDbContext<AppDbContext>(x => x
-                .UseSqlite(_config.GetConnectionString("DefaultConnection")));
+                .UseSqlServer(_config.GetConnectionString("DefaultConnection")));
 
             services.AddDbContext<AppIdentityDbContext>(opt =>
             {
-                opt.UseSqlite(_config.GetConnectionString("IdentityConnection"));
+                opt.UseSqlServer(_config.GetConnectionString("IdentityConnection"));
             });
             
             
-            services.AddIdentityServices();
+            services.AddIdentityServices(_config);
             
             services.AddScoped(typeof(IGenericRepository<>),
                 typeof(GenericRepository<>));
+
+            services.AddScoped<ITokenService, TokenService>();
 
             services.AddAutoMapper(typeof(MappingProfiles));
             

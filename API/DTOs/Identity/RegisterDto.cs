@@ -7,6 +7,7 @@ namespace API.DTOs.Identity
     public record RegisterDto
     {
         [Required]
+        [MaxLength(11)]
         public string PersonalId { get; set; }
         
         [Required]

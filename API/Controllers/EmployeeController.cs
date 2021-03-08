@@ -6,10 +6,12 @@ using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Authorize]
     public class EmployeesController : BaseApiController
     {
         private readonly IGenericRepository<Employee> _empRepo;
@@ -57,13 +59,13 @@ namespace API.Controllers
         {
             if (addEmp == null) return BadRequest();
 
-            var pIdSpec = new EmployeeWithPersonalIdSpecification(addEmp.PersonalId);
+            var pIdSpec = new EmployeeByPersonalIdSpecification(addEmp.PersonalId);
             var empByPersonalId = await _empRepo.GetItemWithSpecAsync(pIdSpec);
 
             if (empByPersonalId != null)
                 return BadRequest($"employee with personal id : {addEmp.PersonalId} already exists");
 
-            var numSpec = new EmployeeWithPhoneNumberSpecification(addEmp.PhoneNumber);
+            var numSpec = new EmployeeByPhoneNumberSpecification(addEmp.PhoneNumber);
             var empByNumber = await _empRepo.GetItemWithSpecAsync(numSpec);
 
             if (empByNumber != null)

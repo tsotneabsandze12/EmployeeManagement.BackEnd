@@ -1,6 +1,6 @@
 using System.Reflection;
 using Core.Entities.Identity;
-using Infrastructure.Data;
+using Infrastructure.Config.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,8 +8,8 @@ namespace Infrastructure.Identity
 {
     public class AppIdentityDbContext : IdentityDbContext<AppUser>
     {
-        public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options)
-            :base(options)
+        public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> opt)
+            :base(opt)
         {
             
         }
@@ -17,7 +17,8 @@ namespace Infrastructure.Identity
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly(),
+                type => type == typeof(AppUserConfiguration));
         }
     }
 }
