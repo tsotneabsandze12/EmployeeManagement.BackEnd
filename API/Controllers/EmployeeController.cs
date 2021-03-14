@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.DTOs;
+using API.Errors;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
@@ -31,16 +32,9 @@ namespace API.Controllers
         public async Task<ActionResult<IReadOnlyList<EmployeeDto>>> GetEmployees(
             [FromQuery] SpecParams specParams)
         {
-            try
-            {
-                var spec = new EmployeesWithRelatedDataAndFilters(specParams);
-                IReadOnlyList<Employee> employees = await _empRepo.ListBySpecAsync(spec);
-                return Ok(_mapper.Map<IReadOnlyList<Employee>, IReadOnlyList<EmployeeDto>>(employees));
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e);
-            }
+            var spec = new EmployeesWithRelatedDataAndFilters(specParams);
+            IReadOnlyList<Employee> employees = await _empRepo.ListBySpecAsync(spec);
+            return Ok(_mapper.Map<IReadOnlyList<Employee>, IReadOnlyList<EmployeeDto>>(employees));
         }
 
         [HttpGet("get/{id}")]
@@ -49,7 +43,7 @@ namespace API.Controllers
             var spec = new EmployeesWithRelatedDataAndFilters(id);
             var emp = await _empRepo.GetItemWithSpecAsync(spec);
 
-            if (emp == null) return NotFound();
+            if (emp == null) return NotFound(new ApiResponse(404));
 
             return Ok(_mapper.Map<Employee, EmployeeDto>(emp));
         }
@@ -57,19 +51,19 @@ namespace API.Controllers
         [HttpPost("add")]
         public async Task<ActionResult<EmployeeDto>> AddEmployee([FromBody] AddEmployeeDto addEmp)
         {
-            if (addEmp == null) return BadRequest();
+            if (addEmp == null) return BadRequest(new ApiResponse(400));
 
             var pIdSpec = new EmployeeByPersonalIdSpecification(addEmp.PersonalId);
             var empByPersonalId = await _empRepo.GetItemWithSpecAsync(pIdSpec);
 
             if (empByPersonalId != null)
-                return BadRequest($"employee with personal id : {addEmp.PersonalId} already exists");
+                return BadRequest(new ApiResponse(403,$"employee with personal id : {addEmp.PersonalId} already exists"));
 
             var numSpec = new EmployeeByPhoneNumberSpecification(addEmp.PhoneNumber);
             var empByNumber = await _empRepo.GetItemWithSpecAsync(numSpec);
 
             if (empByNumber != null)
-                return BadRequest($"employee with phone number: {addEmp.PhoneNumber} already exists ");
+                return BadRequest(new ApiResponse(403,$"employee with phone number: {addEmp.PhoneNumber} already exists "));
 
 
             var newEmployee = _mapper.Map<AddEmployeeDto, Employee>(addEmp);
@@ -88,10 +82,10 @@ namespace API.Controllers
         {
             var empToMatch = await _empRepo.GetByIdAsync(id);
 
-            if (empToMatch == null) return NotFound();
+            if (empToMatch == null) return NotFound(new ApiResponse(404));
 
             _mapper.Map(updateEmployee, empToMatch);
-            _empRepo.SaveChanges();
+            await _empRepo.SaveChanges();
 
             return NoContent();
         }
@@ -101,13 +95,14 @@ namespace API.Controllers
         public async Task<IActionResult> DeleteEmployee(int id)
         {
             var employee = await _empRepo.GetByIdAsync(id);
-            if (employee == null) return NotFound();
+            if (employee == null) return NotFound(new ApiResponse(404));
 
             await _empRepo.DeleteAsync(employee);
             return NoContent();
         }
 
 
+        [AllowAnonymous]
         [HttpGet("personalIdExists")]
         public async Task<ActionResult<bool>> PersonalIdExists([FromQuery] string personalId)
         {
@@ -118,6 +113,7 @@ namespace API.Controllers
         }
 
 
+        [AllowAnonymous]
         [HttpGet("phoneExists")]
         public async Task<ActionResult<bool>> PhoneNumberExists([FromQuery] string number)
         {

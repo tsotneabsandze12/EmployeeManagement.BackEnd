@@ -34,9 +34,10 @@ namespace Infrastructure.Data
             await _ctx.SaveChangesAsync();
         }
 
-        public bool SaveChanges()
+        public async Task SaveChanges()
         {
-            return (_ctx.SaveChanges() > 0);
+            //return (_ctx.SaveChanges() > 0);
+            await _ctx.SaveChangesAsync();
         }
         public async Task DeleteAsync(T item)
         {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.Extensions;
 using API.Helpers;
+using API.MiddleWares;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Identity;
@@ -64,14 +65,22 @@ namespace API
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
+        {   
+            // for server errors
+            app.UseMiddleware<ExceptionMiddleware>();
+            
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                //app.UseDeveloperExceptionPage();
+                
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
             }
+            
 
+            //for non existent endpoints
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
+            
             app.UseHttpsRedirection();
 
             app.UseRouting();

@@ -7,7 +7,7 @@ namespace Core.Interfaces
 {
     public interface IGenericRepository<T> where T : BaseEntity
     {
-        bool SaveChanges();
+        Task SaveChanges();
         Task<IReadOnlyList<T>> ListAllAsync();
         
         Task<T> GetByIdAsync(int id);
