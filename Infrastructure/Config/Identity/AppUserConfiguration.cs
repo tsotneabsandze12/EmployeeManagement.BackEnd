@@ -12,24 +12,22 @@ namespace Infrastructure.Config.Identity
         {
             builder.Property(p => p.PersonalId).HasMaxLength(11)
                 .IsRequired();
-            
+
             builder.Property(p => p.FirstName).HasColumnType("nvarchar(30)")
                 .IsRequired();
-            
+
             builder.Property(p => p.LastName).HasColumnType("nvarchar(30)")
                 .IsRequired();
-            
-            builder.Property(p=>p.Gender)
+
+            builder.Property(p => p.Gender)
                 .HasConversion(
                     x => x.ToString(),
-                    x => (GenderEnum)Enum.
-                        Parse(typeof(GenderEnum), x))
+                    x => (GenderEnum) Enum.Parse(typeof(GenderEnum), x))
                 .HasColumnType("nvarchar(10)")
                 .IsRequired();
-            
+
             builder.Property(p => p.BirthDate).HasColumnType("date")
                 .IsRequired();
-            
         }
     }
 }

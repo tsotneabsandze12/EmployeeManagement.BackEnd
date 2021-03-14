@@ -22,7 +22,7 @@ namespace Infrastructure.Data
         {
             return await _ctx.Set<T>().FindAsync(id);
         }
-        
+
         public async Task<IReadOnlyList<T>> ListAllAsync()
         {
             return await _ctx.Set<T>().ToListAsync();
@@ -36,9 +36,9 @@ namespace Infrastructure.Data
 
         public async Task SaveChanges()
         {
-            //return (_ctx.SaveChanges() > 0);
             await _ctx.SaveChangesAsync();
         }
+
         public async Task DeleteAsync(T item)
         {
             _ctx.Set<T>().Remove(item);

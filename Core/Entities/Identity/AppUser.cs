@@ -12,5 +12,4 @@ namespace Core.Entities.Identity
         public GenderEnum? Gender { get; set; }
         public DateTime? BirthDate { get; set; }
     }
-   
 }

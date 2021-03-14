@@ -43,7 +43,7 @@ namespace API.Controllers
             var spec = new EmployeesWithRelatedDataAndFilters(id);
             var emp = await _empRepo.GetItemWithSpecAsync(spec);
 
-            if (emp == null) return NotFound(new ApiResponse(404));
+            if (emp == null) return NotFound(new ApiResponse(404,$"employee with id {id} could not be found"));
 
             return Ok(_mapper.Map<Employee, EmployeeDto>(emp));
         }
@@ -82,7 +82,7 @@ namespace API.Controllers
         {
             var empToMatch = await _empRepo.GetByIdAsync(id);
 
-            if (empToMatch == null) return NotFound(new ApiResponse(404));
+            if (empToMatch == null) return NotFound(new ApiResponse(404,$"no employee with id {id}"));
 
             _mapper.Map(updateEmployee, empToMatch);
             await _empRepo.SaveChanges();

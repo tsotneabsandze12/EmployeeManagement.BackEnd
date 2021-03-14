@@ -33,8 +33,9 @@ namespace API.MiddleWares
             }
             catch (Exception ex)
             {
+                // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
                 _logger.LogError(ex, ex.Message);
-                
+
                 ctx.Response.ContentType = "application/json";
                 ctx.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
 

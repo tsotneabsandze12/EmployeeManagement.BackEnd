@@ -31,14 +31,12 @@ namespace API
             _config = config;
         }
 
-        
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
-            
+
             services.AddDbContext<AppDbContext>(x => x
                 .UseSqlServer(_config.GetConnectionString("DefaultConnection")));
 
@@ -46,41 +44,38 @@ namespace API
             {
                 opt.UseSqlServer(_config.GetConnectionString("IdentityConnection"));
             });
-            
-            
+
+
             services.AddIdentityServices(_config);
-            
+
             services.AddScoped(typeof(IGenericRepository<>),
                 typeof(GenericRepository<>));
 
             services.AddScoped<ITokenService, TokenService>();
 
             services.AddAutoMapper(typeof(MappingProfiles));
-            
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
-            });
+
+            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "API", Version = "v1"}); });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {   
+        {
             // for server errors
             app.UseMiddleware<ExceptionMiddleware>();
-            
+
             if (env.IsDevelopment())
             {
                 //app.UseDeveloperExceptionPage();
-                
+
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
             }
-            
+
 
             //for non existent endpoints
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
-            
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -88,10 +83,7 @@ namespace API
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

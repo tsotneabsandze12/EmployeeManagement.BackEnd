@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Config
 {
-    public class PositionConfiguration:IEntityTypeConfiguration<Position>
+    public class PositionConfiguration : IEntityTypeConfiguration<Position>
     {
         public void Configure(EntityTypeBuilder<Position> builder)
         {

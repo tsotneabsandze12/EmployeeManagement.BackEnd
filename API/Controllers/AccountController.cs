@@ -45,9 +45,8 @@ namespace API.Controllers
             var user = await _userManager.FindByEmailAsync(email);
             return Ok(user != null);
         }
-        
-        
-        
+
+
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
@@ -56,7 +55,7 @@ namespace API.Controllers
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
             if (!result.Succeeded) return Unauthorized(new ApiResponse(401));
-            
+
             return new UserDto()
             {
                 Email = user.Email,
@@ -91,6 +90,5 @@ namespace API.Controllers
                 PersonalId = user.PersonalId
             };
         }
-
     }
 }

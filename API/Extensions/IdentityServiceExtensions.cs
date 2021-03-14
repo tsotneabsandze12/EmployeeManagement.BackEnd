@@ -17,11 +17,11 @@ namespace API.Extensions
             IdentityBuilder builder = services.AddIdentityCore<AppUser>();
 
             builder = new IdentityBuilder(builder.UserType, builder.Services);
-            
+
             builder.AddEntityFrameworkStores<AppIdentityDbContext>();
             builder.AddSignInManager<SignInManager<AppUser>>();
 
-            
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -33,13 +33,12 @@ namespace API.Extensions
 
                         ValidIssuer = config["Token:Issuer"],
                         ValidateIssuer = true,
-                        
-                        ValidateAudience =  false
+
+                        ValidateAudience = false
                     };
                 });
 
             return services;
         }
-
     }
 }

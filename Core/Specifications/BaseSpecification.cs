@@ -9,7 +9,7 @@ namespace Core.Specifications
         protected BaseSpecification()
         {
         }
-        
+
         protected BaseSpecification(Expression<Func<T, bool>> filter)
         {
             Filter = filter;

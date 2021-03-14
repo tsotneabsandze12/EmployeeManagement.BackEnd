@@ -11,22 +11,20 @@ namespace Infrastructure.Data
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options)
-            :base(options)
+            : base(options)
         {
-            
         }
 
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Position> Positions { get; set; }
-        
-        
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly(),
                 type => type == typeof(EmployeesConfiguration) || type == typeof(PositionConfiguration));
-           // Assembly.GetExecutingAssembly()
-            
+
             modelBuilder.SeedPositions();
             modelBuilder.SeedEmployees();
         }

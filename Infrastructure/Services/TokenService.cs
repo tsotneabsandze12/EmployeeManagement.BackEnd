@@ -14,7 +14,7 @@ namespace Infrastructure.Services
     {
         private readonly IConfiguration _config;
         private readonly SymmetricSecurityKey _key;
-        
+
         public TokenService(IConfiguration config)
         {
             _config = config;
@@ -28,13 +28,13 @@ namespace Infrastructure.Services
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Name, user.FirstName)
             };
-            var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
+            var credentials = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.Now.AddDays(20),
-                SigningCredentials = creds,
+                SigningCredentials = credentials,
                 Issuer = _config["Token:Issuer"]
             };
 

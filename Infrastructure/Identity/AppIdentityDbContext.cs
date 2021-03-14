@@ -9,9 +9,8 @@ namespace Infrastructure.Identity
     public class AppIdentityDbContext : IdentityDbContext<AppUser>
     {
         public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> opt)
-            :base(opt)
+            : base(opt)
         {
-            
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
